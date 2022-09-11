@@ -1,0 +1,10 @@
+server:
+  port: 9001
+logging:
+  level:
+    com.wei.gulimall: debug
+aliyunOss:
+  endpoint: oss-cn-guangzhou.aliyuncs.com
+  accessKeyId: LTAI5tCR1NirghwP1PWtZoKx
+  accessKeySecret: npSmwVY3fHRJNZjQLVGCbTnGzlnHge
+  bucketName: hongwlimei-guall

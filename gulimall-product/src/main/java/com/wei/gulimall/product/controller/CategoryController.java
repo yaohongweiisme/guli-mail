@@ -34,7 +34,7 @@ public class CategoryController {
     @RequestMapping("/list/tree")
     public R listTree(@RequestParam Map<String, Object> params){
        List<CategoryEntity> categoryEntityList=categoryService.listWithTree();
-        return R.ok().put("数据",categoryEntityList);
+        return R.ok().put("categoryEntityList",categoryEntityList);
     }
 
     /**
@@ -71,10 +71,17 @@ public class CategoryController {
     /**
      * 修改
      */
+    @RequestMapping("/update/sort")
+    public R update(@RequestBody CategoryEntity[] updateNodes){
+		categoryService.updateBatchById(Arrays.asList(updateNodes));
+        return R.ok();
+    }
+    /*
+    批量修改
+     */
     @RequestMapping("/update")
     public R update(@RequestBody CategoryEntity category){
-		categoryService.updateById(category);
-
+        categoryService.updateById(category);
         return R.ok();
     }
 
@@ -83,9 +90,10 @@ public class CategoryController {
      */
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] catIds){
-		categoryService.removeByIds(Arrays.asList(catIds));
-
-        return R.ok();
+//		categoryService.removeByIds(Arrays.asList(catIds));
+        //检测id关联性
+        categoryService.removeMenuById(Arrays.asList(catIds));
+        return R.ok("删除成功");
     }
 
 }

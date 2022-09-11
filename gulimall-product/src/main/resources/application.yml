@@ -11,3 +11,6 @@ mybatis-plus:
       id-type: auto
 server:
   port: 8001
+logging:
+  level:
+    com.wei.gulimall: debug
