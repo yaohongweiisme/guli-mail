@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 
 import com.wei.common.valid.AddGroup;
+import com.wei.common.valid.ListValue;
 import com.wei.common.valid.UpdateGroup;
+import com.wei.common.valid.UpdateStatusGroup;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
@@ -49,18 +51,19 @@ public class BrandEntity implements Serializable {
 	/**
 	 * 显示状态[0-不显示；1-显示]
 	 */
+	@ListValue(vals = {0,1},groups = {AddGroup.class, UpdateStatusGroup.class})
 	private Integer showStatus;
 	/**
 	 * 检索首字母
 	 */
 	@NotEmpty(message = "品牌首字段不能为空")
-	@Pattern(regexp = "/^[a-zA-Z]$/",message = "首字段只能是字母")
+	@Pattern(regexp = "^[a-zA-Z]$",message = "首字段只能是字母",groups = {AddGroup.class,UpdateGroup.class})
 	private String firstLetter;
 	/**
 	 * 排序
 	 */
-	@Min(value = 0,message = "排序必须大于等于0")
-	@NotNull(message = "排序不能为空")
+	@Min(value = 0,message = "排序必须大于等于0",groups = {AddGroup.class,UpdateGroup.class})
+	@NotNull(message = "排序不能为空",groups = {AddGroup.class,UpdateGroup.class})
 	private Integer sort;
 
 }
