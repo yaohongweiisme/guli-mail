@@ -2,10 +2,7 @@ package com.wei.gulimall.product.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -53,6 +50,23 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     public void removeMenuById(List<Long> asList) {
         // TODO 检查菜单关联性，是否被其他地方引用
         baseMapper.deleteBatchIds(asList);
+    }
+
+    @Override
+    public Long[] findCatelogPath(Long catelogId) {
+        List<Long> paths=new ArrayList<>();//目录路径： 父子孙
+        List<Long> parentPath = findParentPath(catelogId, paths);
+        Collections.reverse(parentPath);
+        return (Long[]) parentPath.toArray(new Long[parentPath.size()]);
+    }
+
+    private List<Long> findParentPath(Long catelogId,List<Long> paths){
+        paths.add(catelogId);
+        CategoryEntity categoryEntity = this.getById(catelogId);
+        if(categoryEntity.getParentCid()!=0){
+            findParentPath(categoryEntity.getParentCid(),paths);
+        }
+        return paths;
     }
 
     /*
