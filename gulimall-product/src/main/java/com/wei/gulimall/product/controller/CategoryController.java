@@ -81,7 +81,8 @@ public class CategoryController {
      */
     @RequestMapping("/update")
     public R update(@RequestBody CategoryEntity category){
-        categoryService.updateById(category);
+        //更新冗余字段，在品牌分类对应关系表
+        categoryService.updateCascade(category);
         return R.ok();
     }
 
