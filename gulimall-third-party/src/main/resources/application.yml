@@ -4,7 +4,3 @@ logging:
   level:
     com.wei.gulimall: debug
 aliyunOss:
-  endpoint: oss-cn-guangzhou.aliyuncs.com
-  accessKeyId: LTAI5t9UAyAPCBR7de9UeQNA
-  accessKeySecret: vIkwNLuYydYAsNNHGUAfGpLBXREHkz
-  bucketName: hongwlimei-guall
