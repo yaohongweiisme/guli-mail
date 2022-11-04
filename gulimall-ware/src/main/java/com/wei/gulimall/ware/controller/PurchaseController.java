@@ -1,9 +1,11 @@
 package com.wei.gulimall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.wei.gulimall.ware.vo.MergeVo;
+import com.wei.gulimall.ware.vo.PurchaseDoneVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +29,30 @@ public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
     /**
+     * 完成采购单的采购
+     */
+    @PostMapping("/done")
+    public R finish(@RequestBody PurchaseDoneVo purchaseDoneVo){
+        purchaseService.done(purchaseDoneVo);
+        return R.ok();
+    }
+
+    /**
+     * 领取采购单
+     */
+    @PostMapping("/received")
+    public R received(@RequestBody List<Long> ids){
+        purchaseService.received(ids);
+        return R.ok();
+    }
+
+    /**
      * 合并采购单
      */
     @PostMapping("/merge")
     public R merge(@RequestBody MergeVo mergeVo){
-        purchaseService.mergePurchase(mergeVo);
-        return R.ok();
+        boolean mergePurchase = purchaseService.mergePurchase(mergeVo);
+        return mergePurchase?R.ok():R.error("合并错误");
     }
     /**
      *查询未领取的采购单

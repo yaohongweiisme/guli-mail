@@ -1,8 +1,11 @@
 package com.wei.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.wei.gulimall.product.entity.ProductAttrValueEntity;
+import com.wei.gulimall.product.service.ProductAttrValueService;
 import com.wei.gulimall.product.vo.AttrRespVo;
 import com.wei.gulimall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,23 @@ import com.wei.common.utils.R;
 public class AttrController {
     @Autowired
     private AttrService attrService;
-    /*
+    @Autowired
+    ProductAttrValueService productAttrValueService;
+
+    /**
+     * 通过spuId回显商品属性
+     * @param spuId
+     * @return
+     */
+    @GetMapping("/base/listforspu/{spuId}")
+    public R baseAttrList(@PathVariable("spuId") Long spuId){
+        List<ProductAttrValueEntity> entities=productAttrValueService.baseAttrListForSpu(spuId);
+
+        return R.ok().put("data",entities);
+    }
+
+
+    /**
     通过分类id查询所有属性,分为基础属性和销售属性
      */
     @GetMapping("/{attrType}/list/{catelogId}")
@@ -77,6 +96,20 @@ public class AttrController {
     @RequestMapping("/update")
     public R update(@RequestBody AttrVo attrVo){
 		attrService.updateAttrDetail(attrVo);
+
+        return R.ok();
+    }
+
+    /**
+     * 更新某个spu的各属性值
+     * @param spuId
+     * @param entities
+     * @return
+     */
+    @PostMapping("/update/{spuId}")
+    public R updateSpuAttr(@PathVariable("spuId") Long spuId,
+                           @RequestBody List<ProductAttrValueEntity> entities){
+        productAttrValueService.updateSpuAttrValue(spuId,entities);
 
         return R.ok();
     }
