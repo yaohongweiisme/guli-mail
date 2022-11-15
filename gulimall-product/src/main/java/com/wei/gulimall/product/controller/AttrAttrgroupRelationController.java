@@ -36,7 +36,6 @@ public class AttrAttrgroupRelationController {
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = attrAttrgroupRelationService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 

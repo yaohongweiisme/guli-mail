@@ -1,14 +1,12 @@
 package com.wei.gulimall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.wei.gulimall.ware.vo.HasStockVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.wei.gulimall.ware.entity.WareInfoEntity;
 import com.wei.gulimall.ware.service.WareInfoService;
@@ -29,6 +27,14 @@ import com.wei.common.utils.R;
 public class WareInfoController {
     @Autowired
     private WareInfoService wareInfoService;
+
+    //查询sku是否有库存
+    @PostMapping("/hasStock")
+    public List<HasStockVo> getSkuStock(@RequestBody List<Long> skuIds){
+        //HasStockVo:   skuId,hasStock
+        List<HasStockVo> vos= wareInfoService.getSkuStock(skuIds);
+        return vos;
+    }
 
     /**
      * 列表

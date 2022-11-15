@@ -1,12 +1,14 @@
 package com.wei.gulimall.ware.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wei.gulimall.ware.vo.HasStockVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wei.common.utils.PageUtils;
@@ -38,5 +40,22 @@ public class WareInfoServiceImpl extends ServiceImpl<WareInfoDao, WareInfoEntity
                 wrapper
         );
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<HasStockVo> getSkuStock(List<Long> skuIds) {
+        List<HasStockVo> hasStockVos = skuIds.stream().map(sku -> {
+            HasStockVo hasStockVo = new HasStockVo();
+            Long count=baseMapper.getSkuStock(sku);
+            if(count==null){
+                hasStockVo.setHasStock(false);
+            }else{
+                hasStockVo.setHasStock(count>0);
+            }
+            hasStockVo.setSkuId(sku);
+            return hasStockVo;
+        }).collect(Collectors.toList());
+        log.debug("库存列表:"+ hasStockVos);
+        return hasStockVos;
     }
 }
