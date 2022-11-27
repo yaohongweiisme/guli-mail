@@ -1,4 +1,4 @@
-package com.wei.gulimall.product.controller;
+package com.wei.gulimall.product.app;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,6 @@ import com.wei.gulimall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.wei.gulimall.product.entity.AttrEntity;
 import com.wei.gulimall.product.service.AttrService;
 import com.wei.common.utils.PageUtils;
 import com.wei.common.utils.R;

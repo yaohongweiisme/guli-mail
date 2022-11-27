@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: com.alibaba.spring:spring-context-support:1.0.11">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../BuildTools/apache-maven-3.8.4-bin/repo/com/alibaba/spring/spring-context-support/1.0.11/spring-context-support-1.0.11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../BuildTools/apache-maven-3.8.6/rep/com/alibaba/spring/spring-context-support/1.0.11/spring-context-support-1.0.11.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/../../BuildTools/apache-maven-3.8.4-bin/repo/com/alibaba/spring/spring-context-support/1.0.11/spring-context-support-1.0.11-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../BuildTools/apache-maven-3.8.6/rep/com/alibaba/spring/spring-context-support/1.0.11/spring-context-support-1.0.11-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../../BuildTools/apache-maven-3.8.4-bin/repo/com/alibaba/spring/spring-context-support/1.0.11/spring-context-support-1.0.11-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../BuildTools/apache-maven-3.8.6/rep/com/alibaba/spring/spring-context-support/1.0.11/spring-context-support-1.0.11-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

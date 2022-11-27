@@ -6,13 +6,19 @@ import com.wei.gulimall.product.service.BrandService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 class GulimallProductApplicationTests {
     @Autowired
     BrandService brandService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Test
     void contextLoads() {
@@ -43,5 +49,11 @@ class GulimallProductApplicationTests {
 //// 关闭OSSClient。
 //        ossClient.shutdown();
 //    }
+    @Test
+    void testRedis(){
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        ops.set("hello","world_"+ UUID.randomUUID());
+        System.out.println("hello的值是"+ops.get("hello"));
+    }
 
 }

@@ -26,6 +26,10 @@ spring:
             - Path=/api/thirdparty/**
           filters:
             - RewritePath=/api/thirdparty/?(?<segment>.*), /$\{segment}
+        - id: gulimall_nginx_route
+          uri: lb://gulimall-product
+          predicates:
+            - Host=**.wei-gulimall.com
 #        模糊路由放在最下面，让他优先级最低
         - id: admin_route
           uri: lb://renren-fast

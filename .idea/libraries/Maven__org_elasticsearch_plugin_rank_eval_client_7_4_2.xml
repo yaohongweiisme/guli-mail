@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: org.elasticsearch.plugin:rank-eval-client:7.4.2">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../BuildTools/apache-maven-3.8.4-bin/repo/org/elasticsearch/plugin/rank-eval-client/7.4.2/rank-eval-client-7.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../BuildTools/apache-maven-3.8.6/rep/org/elasticsearch/plugin/rank-eval-client/7.4.2/rank-eval-client-7.4.2.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/../../BuildTools/apache-maven-3.8.4-bin/repo/org/elasticsearch/plugin/rank-eval-client/7.4.2/rank-eval-client-7.4.2-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../BuildTools/apache-maven-3.8.6/rep/org/elasticsearch/plugin/rank-eval-client/7.4.2/rank-eval-client-7.4.2-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../../BuildTools/apache-maven-3.8.4-bin/repo/org/elasticsearch/plugin/rank-eval-client/7.4.2/rank-eval-client-7.4.2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../BuildTools/apache-maven-3.8.6/rep/org/elasticsearch/plugin/rank-eval-client/7.4.2/rank-eval-client-7.4.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

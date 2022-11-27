@@ -1,4 +1,4 @@
-package com.wei.gulimall.product.controller;
+package com.wei.gulimall.product.app;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -10,32 +10,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wei.gulimall.product.entity.CommentReplayEntity;
-import com.wei.gulimall.product.service.CommentReplayService;
+import com.wei.gulimall.product.entity.SkuInfoEntity;
+import com.wei.gulimall.product.service.SkuInfoService;
 import com.wei.common.utils.PageUtils;
 import com.wei.common.utils.R;
 
 
 
 /**
- * 商品评价回复关系
+ * sku信息
  *
  * @author wei
  * @email 2558939179qq@gmail.com
- * @date 2022-09-05 12:23:49
+ * @date 2022-09-14 10:58:45
  */
 @RestController
-@RequestMapping("product/commentreplay")
-public class CommentReplayController {
+@RequestMapping("product/skuinfo")
+public class SkuInfoController {
     @Autowired
-    private CommentReplayService commentReplayService;
+    private SkuInfoService skuInfoService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = commentReplayService.queryPage(params);
+        PageUtils page = skuInfoService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -44,19 +44,19 @@ public class CommentReplayController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-		CommentReplayEntity commentReplay = commentReplayService.getById(id);
+    @RequestMapping("/info/{skuId}")
+    public R info(@PathVariable("skuId") Long skuId){
+		SkuInfoEntity skuInfo = skuInfoService.getById(skuId);
 
-        return R.ok().put("commentReplay", commentReplay);
+        return R.ok().put("skuInfo", skuInfo);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody CommentReplayEntity commentReplay){
-		commentReplayService.save(commentReplay);
+    public R save(@RequestBody SkuInfoEntity skuInfo){
+		skuInfoService.save(skuInfo);
 
         return R.ok();
     }
@@ -65,8 +65,8 @@ public class CommentReplayController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody CommentReplayEntity commentReplay){
-		commentReplayService.updateById(commentReplay);
+    public R update(@RequestBody SkuInfoEntity skuInfo){
+		skuInfoService.updateById(skuInfo);
 
         return R.ok();
     }
@@ -75,8 +75,8 @@ public class CommentReplayController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		commentReplayService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] skuIds){
+		skuInfoService.removeByIds(Arrays.asList(skuIds));
 
         return R.ok();
     }
