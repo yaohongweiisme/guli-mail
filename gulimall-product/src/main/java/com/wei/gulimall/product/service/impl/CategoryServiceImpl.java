@@ -1,7 +1,5 @@
 package com.wei.gulimall.product.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -13,9 +11,12 @@ import com.wei.gulimall.product.entity.CategoryEntity;
 import com.wei.gulimall.product.service.CategoryBrandRelationService;
 import com.wei.gulimall.product.service.CategoryService;
 import com.wei.gulimall.product.vo.Catelog2Vo;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
 //    private Map<String,Object> cache=new HashMap<>();  本地缓存不适用与分布式系统
 
@@ -75,41 +79,58 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         Collections.reverse(parentPath);
         return (Long[]) parentPath.toArray(new Long[parentPath.size()]);
     }
-
+//    @Caching(
+//            evict = {
+//                    @CacheEvict(value = {"Category"},key = "'getLevelOne'"),
+//                    @CacheEvict(value = {"Category"},key = "'getCatalogLevelTwoAndThreeJson'")
+//            }
+//    )
+    @CacheEvict(value = {"Category"},allEntries = true)
     @Override
     public void updateCascade(CategoryEntity category) {
         updateById(category);
         categoryBrandRelationService.updateCategoryData(category.getCatId(), category.getName());
     }
-
+    @Cacheable(value = {"Category"},key = "#root.method.name")
     @Override
     public List<CategoryEntity> getLevelOne() {
-        String levelOneList = stringRedisTemplate.opsForValue().get("levelOneList");
-        if (!StringUtils.isEmpty(levelOneList)) {
-            List<CategoryEntity> categoryEntities = JSON.parseObject(levelOneList, new TypeReference<List<CategoryEntity>>() {
-            });
-            return categoryEntities;
-        }
+
         List<CategoryEntity> categoryEntities = baseMapper.selectList(new LambdaQueryWrapper<CategoryEntity>()
                 .eq(CategoryEntity::getParentCid, 0));
-        String jsonString = JSON.toJSONString(categoryEntities);
-        stringRedisTemplate.opsForValue().set("levelOneList", jsonString);
+
         return categoryEntities;
     }
 
+
     @Override
+    @Cacheable(value = {"Category"},key = "#root.method.name")
     public Map<String, List<Catelog2Vo>> getCatalogLevelTwoAndThreeJson() {
-        String catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
-        if (StringUtils.isEmpty(catalogJson)) {
-            log.debug("缓存不命中，查询数据库");
-            Map<String, List<Catelog2Vo>> fromDb = getCatalogLevelTwoAndThreeJsonFromDbWithRedisLock();
+//        String catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
+//        if (StringUtils.isEmpty(catalogJson)) {
+//            log.debug("缓存不命中，查询数据库");
+            Map<String, List<Catelog2Vo>> fromDb = getCatalogLevelTwoAndThreeJsonFromDbWithRedissonLock();
             return fromDb;
-        }
-        log.debug("缓存命中，直接返回");
-        Map<String, List<Catelog2Vo>> map = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {
-        });
-        return map;
+//        }
+//        log.debug("缓存命中，直接返回");
+//        Map<String, List<Catelog2Vo>> map = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {
+//        });
+//        return fromDb;
     }
+
+    public Map<String, List<Catelog2Vo>> getCatalogLevelTwoAndThreeJsonFromDbWithRedissonLock() {
+        RLock lock = redissonClient.getLock("CatalogLevelTwoAndThreeJson-Lock");
+        lock.lock();
+        Map<String, List<Catelog2Vo>> fromDb;
+        try {
+            fromDb = getCatalogLevel2And3FromDb();
+        } finally {
+            lock.unlock();
+        }
+
+        return fromDb;
+
+    }
+
 
     public Map<String, List<Catelog2Vo>> getCatalogLevelTwoAndThreeJsonFromDbWithRedisLock() {
         //占分布式锁,考虑突发情况，建立key时就设置过期时间
@@ -138,9 +159,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         } else {
             //加锁失败，以自旋的方式重试
             log.debug("获取锁失败，等待锁。。。。。。。。。。。。。。。");
-            try{
+            try {
                 Thread.sleep(200);
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e);
             }
 
@@ -151,13 +172,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     @Nullable
-    private Map<String, List<Catelog2Vo>> getCatalogLevel2And3FromDb() {
-        String catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
-        if (!StringUtils.isEmpty(catalogJson)) {
-            Map<String, List<Catelog2Vo>> map = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {
-            });
-            return map;
-        }
+    @Cacheable(value = {"Category"},key = "#root.method.name")
+    public Map<String, List<Catelog2Vo>> getCatalogLevel2And3FromDb() {
+//        String catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
+//        if (!StringUtils.isEmpty(catalogJson)) {
+//            Map<String, List<Catelog2Vo>> map = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {
+//            });
+//            return map;
+//        }
         log.debug("查询数据库");
         // 查出所有分类数据，并缓存数据，避免频繁查询数据库
         List<CategoryEntity> selectList = baseMapper.selectList(null);
@@ -184,8 +206,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 }
         ));
 
-        catalogJson = JSON.toJSONString(map);
-        stringRedisTemplate.opsForValue().set("catalogJson", catalogJson, 1, TimeUnit.DAYS);
+//        catalogJson = JSON.toJSONString(map);
+//        stringRedisTemplate.opsForValue().set("catalogJson", catalogJson, 1, TimeUnit.DAYS);
         return map;
     }
 
