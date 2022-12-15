@@ -24,7 +24,7 @@ public class IndexController {
         return "index"; //视图解析器自动加上前缀，thymeleaf默认是classpath:/template
     }
     @ResponseBody
-    @GetMapping("/index/catalog.json")
+    @GetMapping("/index/json/catalog.json")
     public Map<String, List<Catelog2Vo>> getCatalogJson(){
         Map<String, List<Catelog2Vo>> catalogMap  =categoryService.getCatalogLevelTwoAndThreeJson();
         return catalogMap;

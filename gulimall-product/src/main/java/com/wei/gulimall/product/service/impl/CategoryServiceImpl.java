@@ -37,7 +37,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Autowired
     private RedissonClient redissonClient;
 
-//    private Map<String,Object> cache=new HashMap<>();  本地缓存不适用与分布式系统
+//    private Map<String,Object> cache=new HashMap<>();  本地缓存不适用于分布式系统
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
